@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.AdminMenuMapper">
+    <update id="updateSort">
+        UPDATE
+            `admin_menu`
+        SET
+            `sort` = `sort` + #{addSort}
+        WHERE
+            `parent_id` = #{parentId} AND `sort` >= #{startSort} AND `sort` &lt;= #{endSort}
+    </update>
+
+    <select id="listUserMenus" resultType="com.im.common.entity.AdminMenu">
+        SELECT
+          DISTINCT am.id, am.`code`, am.`type`, am.parent_id, am.name, am.url, am.icon, am.sort, am.is_enabled as enabled, am.create_time, am.update_time
+        FROM
+          admin_menu am,admin_role_menu arm,admin_user_role aur
+        WHERE
+          am.id = arm.menu_id AND arm.role_id = aur.role_id AND aur.admin_id = #{adminId} AND am.is_enabled = true
+        ORDER BY
+          am.parent_id, am.sort, am.id
+    </select>
+    <select id="listRoleMenus" resultType="com.im.common.entity.AdminMenu">
+        SELECT
+          DISTINCT am.id, am.`code`, am.`type`, am.parent_id, am.name, am.url, am.icon, am.sort, am.is_enabled as enabled, am.create_time, am.update_time
+        FROM
+          admin_menu am,admin_role_menu arm
+        WHERE
+          am.id = arm.menu_id AND arm.role_id = #{roleId} AND am.is_enabled = true
+        ORDER BY
+          am.parent_id, am.sort, am.id
+    </select>
+</mapper>

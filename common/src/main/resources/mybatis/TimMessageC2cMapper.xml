@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.TimMessageC2cMapper">
+
+    <select id="pageVOForPortal" resultType="com.im.common.entity.tim.TimMessageC2c">
+        SELECT
+        c2c.id id,
+        c2c.from_user_id fromUserId,
+        c2c.to_user_id toUserId,
+        c2c.msg_key msgKey,
+        c2c.msg_random msgRandom,
+        c2c.msg_seq msgSeq,
+        c2c.send_time sendTime,
+        c2c.msg_from_platform msgFromPlatform,
+        c2c.client_ip clientIp,
+        c2c.create_time createTime,
+        c2c.update_time updateTime
+        FROM tim_message_c2c c2c
+        LEFT JOIN tim_message_c2c_elem_rel rel ON c2c.id = rel.message_id
+        <if test="param.msgType != null and param.msgType != '' and param.msgType != 'TIMTextElem'">
+            LEFT JOIN tim_message_elem_custom ec ON ec.id = rel.elem_id
+        </if>
+        <if test="param.msgType != null and param.msgType != '' and param.msgType == 'TIMTextElem'">
+            LEFT JOIN tim_message_elem_text m ON m.id = rel.elem_id
+        </if>
+        WHERE
+        c2c.from_user_id IN
+        <foreach collection="param.userIds" item="userId" index="index" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+        AND c2c.to_user_id IN
+        <foreach collection="param.userIds" item="userId" index="index" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+        <if test="param.keyword != null and param.keyword != ''">
+            AND m.text LIKE CONCAT(CONCAT('%',#{param.keyword}),'%')
+        </if>
+        <if test="param.msgType != null and param.msgType == 'TIMTextElem'">
+            AND rel.msg_type = #{param.msgType}
+        </if>
+        <if test="param.msgType != null and param.msgType != '' and param.msgType != 'TIMTextElem'">
+            AND rel.msg_type = 'TIMCustomElem'
+            <if test="param.msgType == 'TIMImageElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"image\"'),'%')
+            </if>
+            <if test="param.msgType == 'TIMFileElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"file\"'),'%')
+            </if>
+            <if test="param.msgType == 'TIMVideoFileElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"video\"'),'%')
+            </if>
+        </if>
+        ORDER BY c2c.send_time DESC
+    </select>
+</mapper>

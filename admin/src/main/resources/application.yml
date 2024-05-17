@@ -1,0 +1,14 @@
+server:
+  # 应用端口
+  port: 7002
+
+spring:
+  profiles:
+    # dev：开发环境
+    # test：测试环境
+    # pro：正式环境
+    active: ${ACTIVE_PROFILES:dev}
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.GroupRedEnvelopeMapper">
+    <update id="addReceived" >
+        UPDATE
+            `group_red_envelope`
+        SET
+            `received_amount` = `received_amount` + #{amount},
+            `received_num` = `received_num` + 1,
+            `status` = #{status}
+        WHERE
+            `received_amount` &lt; `amount` AND `received_num` &lt; num AND `id` = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.AdminRoleMapper">
+
+    <select id="listUserRoles" resultType="com.im.common.entity.AdminRole">
+        SELECT
+        ar.id, ar.name, ar.parent_id, ar.is_enabled as enabled, ar.sort, ar.`remark`, ar.create_time, ar.update_time
+        FROM
+        admin_role ar,admin_user_role aur
+        where
+        ar.id = aur.role_id and aur.admin_id = #{adminId}
+        <if test="enabled != null">
+            and ar.is_enabled = #{enabled}
+        </if>
+        ORDER BY
+        ar.parent_id,ar.sort
+    </select>
+</mapper>

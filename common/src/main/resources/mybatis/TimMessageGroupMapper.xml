@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.TimMessageGroupMapper">
+
+    <select id="pageVOForPortal" resultType="com.im.common.entity.tim.TimMessageGroup">
+        SELECT
+        g.id id,
+        g.from_user_id fromUserId,
+        g.group_id groupId,
+        g.msg_random msgRandom,
+        g.msg_seq msgSeq,
+        g.send_time sendTime,
+        g.msg_from_platform msgFromPlatform,
+        g.client_ip clientIp,
+        g.create_time createTime,
+        g.update_time updateTime
+        FROM tim_message_group g
+        LEFT JOIN tim_message_group_elem_rel rel ON g.id = rel.message_id
+        <if test="param.msgType != null and param.msgType != '' and param.msgType != 'TIMTextElem'">
+            LEFT JOIN tim_message_elem_custom ec ON ec.id = rel.elem_id
+        </if>
+        <if test="param.msgType != null and param.msgType != '' and param.msgType == 'TIMTextElem'">
+            LEFT JOIN tim_message_elem_text m ON m.id = rel.elem_id
+        </if>
+        WHERE
+        g.group_id = #{param.groupId}
+        <if test="param.keyword != null and param.keyword != ''">
+            AND m.text LIKE CONCAT(CONCAT('%',#{param.keyword}),'%')
+        </if>
+        <if test="param.msgType != null and param.msgType == 'TIMTextElem'">
+            AND rel.msg_type = #{param.msgType}
+        </if>
+        <if test="param.msgType != null and param.msgType != '' and param.msgType != 'TIMTextElem'">
+            AND rel.msg_type = 'TIMCustomElem'
+            <if test="param.msgType == 'TIMImageElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"image\"'),'%')
+            </if>
+            <if test="param.msgType == 'TIMFileElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"file\"'),'%')
+            </if>
+            <if test="param.msgType == 'TIMVideoFileElem'">
+                AND ec.custom_data LIKE CONCAT(CONCAT('%','\"businessID\"\:\"video\"'),'%')
+            </if>
+        </if>
+        ORDER BY g.send_time DESC
+    </select>
+</mapper>

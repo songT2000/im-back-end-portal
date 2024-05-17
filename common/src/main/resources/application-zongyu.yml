@@ -1,0 +1,76 @@
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:}
+
+spring:
+  redis:
+    host: 192.168.1.18
+    port: 6379
+    # 选择数据库
+    database: 1
+    password: Kdi928my1012id
+    # 连接超时时间（毫秒），timeout必须大于0
+    timeout: 5000
+    # lettuce
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 8
+        min-idle: 0
+        max-wait: 10000
+  datasource:
+    # 多数据源配置参考https://dynamic-datasource.com/guide/#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95
+    dynamic:
+      # 设置默认的数据源或者数据源组,默认值即为master
+      primary: master
+      datasource:
+        master:
+          url: jdbc:p6spy:mysql://galaxy.cyxvqh2iekvn.ap-northeast-1.rds.amazonaws.com:3306/zongyu?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Hongkong
+          type: com.im.common.util.hikari.HikariCustomDataSource
+          username: galaxy
+          password: otee1aepheivaitheiG2
+          driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+      hikari:
+        # 最小连接数
+        minimum-idle: 5
+        # 最大连接数，数越大，并发越高
+        maximum-pool-size: 100
+  flyway:
+    #是否启用flyway(默认true)
+    enabled: true
+    # 迁移前校验 SQL 文件是否存在问题
+    validate-on-migrate: true
+    # 禁⽌flyway执⾏清空数据库操作
+    clean-disabled: true
+    # 最开始已经存在表结构，且不存在 flyway_schema_history 表时，需要设置为 true
+    baseline-on-migrate: true
+    
+###################  mybatis-plus配置  ###################
+mybatis-plus:
+  # Mapper文件的位置
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mybatis/*.xml
+  # 实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.im.common.entity
+  # 实体枚举扫描，支持通配符 * 或者 ; 分割
+  type-enums-package: com.im.common.entity.enums
+  # TypeHandler 通常用于自定义类型转换
+  type-handlers-package: com.im.common.util.mybatis.typehandler
+  configuration:
+    # 全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为 true。
+    cache-enabled: true
+    # 延时加载的开关
+    lazy-loading-enabled: true
+    # 开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
+    multiple-result-sets-enabled: true
+    # mybatis一级缓存，不在乎那点性能
+    local-cache-scope: statement
+
+logging:
+  pattern:
+    console: '[%d{yyyy-MM-dd HH:mm:ss.SSS} %5level %logger{0}.%M:%L] %msg%n'
+
+# 是否开启swagger文档
+knife4j:
+  enable: false

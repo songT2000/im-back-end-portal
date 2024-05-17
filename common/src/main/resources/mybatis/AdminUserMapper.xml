@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.AdminUserMapper">
+    <!-- 表名 -->
+    <sql id="adminUserTable">
+        admin_user
+    </sql>
+    <sql id="adminUserRoleTable">
+        admin_user_role
+    </sql>
+    <sql id="adminRoleTable">
+        admin_role
+    </sql>
+
+    <select id="pageLowerUsers" resultType="com.im.common.entity.AdminUser">
+        SELECT DISTINCT
+        au.id,
+        au.username,
+        au.last_login_time,
+        au.last_login_ip,
+        au.last_login_area,
+        au.pwd_error_times,
+        au.is_google_bound as google_bound,
+        au.is_online as online,
+        au.remark,
+        au.is_enabled as enabled,
+        au.is_deleted as deleted,
+        au.create_time
+        FROM
+        <include refid="adminUserTable"/>
+        au
+        LEFT JOIN
+        <include refid="adminUserRoleTable"/>
+        aur
+        ON au.id = aur.`admin_id`
+
+        <where>
+            <if test="param.username != null and param.username != ''">
+                AND au.username = #{param.username}
+            </if>
+
+            <if test="param.online != null and param.online == true">
+                AND au.is_online = #{param.online}
+            </if>
+
+            <choose>
+                <when test="param.deleted != null and param.deleted == true">
+                    AND au.is_deleted = true
+                </when>
+                <otherwise>
+                    AND au.is_deleted = false
+                </otherwise>
+            </choose>
+
+            <if test="roleIds != null and roleIds.size() > 0">
+                AND aur.role_id IN
+                <foreach collection="roleIds" index="index" item="item" open="("
+                         separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+
+        ORDER BY au.`create_time`,au.id
+    </select>
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.im.common.mapper.PortalUserMapper">
+    <update id="addBalance">
+        UPDATE `portal_user` SET balance = balance + #{amount}
+        WHERE id = #{userId}
+        <if test="amount lt 0 and allowToNegate == false">
+            AND balance >= -#{amount}
+        </if>
+    </update>
+
+    <select id="pageVOForAdmin" resultType="com.im.common.vo.PortalUserAdminVO">
+        SELECT
+        pu.`id` `id`,
+        pu.`username` `username`,
+        pu.`mobile_prefix` `mobilePrefix`,
+        pu.`mobile` `mobile`,
+        pu.`nickname` `nickname`,
+        pu.`avatar` `avatar`,
+        pu.`withdraw_name` `withdrawName`,
+        pu.`balance` `balance`,
+        pu.`login_enabled` `loginEnabled`,
+        pu.`recharge_enabled` `rechargeEnabled`,
+        pu.`withdraw_enabled` `withdrawEnabled`,
+        pu.`add_friend_enabled` `addFriendEnabled`,
+        pu.`is_enabled` `enabled`,
+        pu.`fund_pwd` fundPwd,
+        pup.`my_invite_code` `myInviteCode`,
+        pup.`sex` `sex`,
+        pup.`birthday` `birthday`,
+        pup.`self_signature` `selfSignature`,
+        pup.`last_login_time` `lastLoginTime`,
+        pup.`last_login_ip` `lastLoginIp`,
+        pup.`last_login_area` `lastLoginArea`,
+        pu.`create_time` `createTime`,
+        pup.`register_device` `registerDevice`,
+        pup.`register_type` `registerType`,
+        pup.`register_invite_code` `registerInviteCode`,
+        pup.`first_recharge_time` `firstRechargeTime`,
+        pup.`first_recharge_amount` `firstRechargeAmount`,
+        pup.`total_recharge_amount` `totalRechargeAmount`,
+        pup.`first_withdraw_time` `firstWithdrawTime`,
+        pup.`first_withdraw_amount` `firstWithdrawAmount`,
+        pup.`total_withdraw_amount` `totalWithdrawAmount`,
+        pup.`is_internal_user` `internalUser`,
+        pup.`admin_remark` `adminRemark`
+        FROM `portal_user` pu LEFT JOIN `portal_user_profile` pup ON pu.`id` = pup.`id`
+        <where>
+            <if test="param.username != null and param.username != ''">
+                AND pu.username = #{param.username}
+            </if>
+
+            <if test="param.mobile != null and param.mobile != ''">
+                AND pu.mobile = #{param.mobile}
+            </if>
+
+            <if test="param.nickname != null and param.nickname != ''">
+                AND pu.nickname = #{param.nickname}
+            </if>
+
+            <if test="param.userGroupIds != null and param.userGroupIds.size() > 0">
+                AND pu.`id` IN(SELECT DISTINCT(`user_id`) FROM `user_group_user` WHERE `group_id` IN
+                <foreach collection="param.userGroupIds" item="groupId" index="index" open="(" close=")" separator=",">
+                    #{groupId}
+                </foreach>)
+            </if>
+
+            <if test="param.withdrawName != null and param.withdrawName != ''">
+                AND pu.withdraw_name = #{param.withdrawName}
+            </if>
+
+            <if test="param.minBalance != null">
+                AND pu.balance >= #{param.minBalance}
+            </if>
+
+            <if test="param.maxBalance != null">
+                AND pu.balance &lt;= #{param.maxBalance}
+            </if>
+
+            <if test="param.loginEnabled != null">
+                AND pu.login_enabled = #{param.loginEnabled}
+            </if>
+
+            <if test="param.rechargeEnabled != null">
+                AND pu.recharge_enabled = #{param.rechargeEnabled}
+            </if>
+
+            <if test="param.withdrawEnabled != null">
+                AND pu.withdraw_enabled = #{param.withdrawEnabled}
+            </if>
+
+            <if test="param.addFriendEnabled != null">
+                AND pu.add_friend_enabled = #{param.addFriendEnabled}
+            </if>
+
+            <if test="param.startCreateTime != null">
+                AND pu.create_time >= #{param.startCreateTime}
+            </if>
+
+            <if test="param.endCreateTime != null">
+                AND pu.create_time &lt;= #{param.endCreateTime}
+            </if>
+
+            <if test="param.inviteCode != null and param.inviteCode != ''">
+                AND pup.register_invite_code = #{param.inviteCode}
+            </if>
+        </where>
+        <choose>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@BALANCE_DESC">
+                ORDER BY pu.`balance` DESC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@BALANCE_ASC">
+                ORDER BY pu.`balance` ASC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@CREATE_TIME_DESC">
+                ORDER BY pu.`create_time` DESC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@CREATE_TIME_ASC">
+                ORDER BY pu.`create_time` ASC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@TOTAL_RECHARGE_AMOUNT_DESC">
+                ORDER BY pup.`total_recharge_amount` DESC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@TOTAL_RECHARGE_AMOUNT_ASC">
+                ORDER BY pup.`total_recharge_amount` ASC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@TOTAL_WITHDRAW_AMOUNT_DESC">
+                ORDER BY pup.`total_withdraw_amount` DESC,pu.`id` DESC
+            </when>
+            <when test="param.orderType == @com.im.common.entity.enums.PortalUserOrderByTypeEnum@TOTAL_WITHDRAW_AMOUNT_DESC">
+                ORDER BY pup.`total_withdraw_amount` ASC,pu.`id` DESC
+            </when>
+            <otherwise>
+                ORDER BY pu.`id` DESC
+            </otherwise>
+        </choose>
+    </select>
+</mapper>

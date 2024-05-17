@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 本工程定义 -->
+    <groupId>com.im</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.1</version>
+    <packaging>pom</packaging>
+
+    <description>
+        admin package：clean package -X -Dmaven.test.skip=true -pl admin -am -f pom.xml
+        portal package：clean package -X -Dmaven.test.skip=true -pl portal -am -f pom.xml
+        parent + common install: clean install -X -Dmaven.test.skip=true -pl common -am -f pom.xml
+    </description>
+
+    <!-- 父pom -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.3.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <!-- 模块 -->
+    <modules>
+        <module>common</module>
+        <module>admin</module>
+        <module>portal</module>
+        <module>scheduler</module>
+        <module>callback</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+
+    <!-- 依赖版本定义，所有工程不得再定义版本号，全部在这里定义 -->
+    <properties>
+        <java.version>1.8</java.version>
+
+        <jsoup.version>1.11.3</jsoup.version>
+        <p6spy.version>3.8.6</p6spy.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <!--        <jackson-version>2.9.9</jackson-version>-->
+        <hutool.version>5.7.7</hutool.version>
+        <mybatis-plus-boot-starter.version>3.4.3.1</mybatis-plus-boot-starter.version>
+        <dynamic-datasource-spring-boot-starter.version>3.3.1</dynamic-datasource-spring-boot-starter.version>
+        <googleauth.version>1.1.5</googleauth.version>
+        <com.google.zxing.version>3.3.1</com.google.zxing.version>
+        <java-jwt.version>3.3.0</java-jwt.version>
+        <bcprov.version>1.6.2</bcprov.version>
+        <ipdb.version>1.1.3</ipdb.version>
+        <okhttp.version>4.2.2</okhttp.version>
+        <jasypt-spring-boot-starter.version>2.1.2</jasypt-spring-boot-starter.version>
+        <guava.version>28.2-jre</guava.version>
+        <knife4j.version>2.0.9</knife4j.version>
+        <aliyun-sdk-oss.version>3.10.2</aliyun-sdk-oss.version>
+        <aliyun-sdk-onsmqtt.version>1.0.5</aliyun-sdk-onsmqtt.version>
+        <org.eclipse.paho.client.mqttv3.version>1.1.0</org.eclipse.paho.client.mqttv3.version>
+        <easyexcel.version>2.2.6</easyexcel.version>
+        <lock4j-redis-template-spring-boot-starter.version>2.2.1</lock4j-redis-template-spring-boot-starter.version>
+        <minio.version>3.0.10</minio.version>
+        <thumbnailator.version>0.4.8</thumbnailator.version>
+        <flyway.version>5.2.4</flyway.version>
+    </properties>
+
+    <!-- 依赖定义 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- xss过滤组件 -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+
+            <!-- SQL日志 -->
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
+            </dependency>
+
+            <!-- JSON组件 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!--jackson-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--                <artifactId>jackson-core</artifactId>-->
+            <!--                <version>${jackson-version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--                <artifactId>jackson-databind</artifactId>-->
+            <!--                <version>${jackson-version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--                <artifactId>jackson-annotations</artifactId>-->
+            <!--                <version>${jackson-version}</version>-->
+            <!--            </dependency>-->
+
+            <!-- 工具类 -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- 本项目工具类 -->
+            <dependency>
+                <groupId>com.im</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- MyBatis组件 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus-boot-starter.version}</version>
+            </dependency>
+
+            <!-- 多数据源 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-datasource-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- Google身份验证器 -->
+            <dependency>
+                <groupId>com.warrenstrange</groupId>
+                <artifactId>googleauth</artifactId>
+                <version>${googleauth.version}</version>
+            </dependency>
+
+            <!-- Google二维码工具 -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${com.google.zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>${com.google.zxing.version}</version>
+            </dependency>
+
+            <!-- JWT -->
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${java-jwt.version}</version>
+            </dependency>
+
+            <!--            &lt;!&ndash; bcprov &ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.bouncycastle</groupId>-->
+            <!--                <artifactId>bcprov-jdk15on</artifactId>-->
+            <!--                <version>${bcprov.version}</version>-->
+            <!--            </dependency>-->
+
+            <!-- Http工具类 -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <!-- ip查询 -->
+            <dependency>
+                <groupId>net.ipip</groupId>
+                <artifactId>ipdb</artifactId>
+                <version>${ipdb.version}</version>
+                <exclusions>
+                    <!-- FastJson已经单独引入 -->
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>fastjson</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- 配置文件加密 -->
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- Guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <!-- knife4j API文档 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+            <!-- 强制升级springfox2.10.5中依赖的spring-plugin-core1.2.0到2.0.0 -->
+            <dependency>
+                <groupId>org.springframework.plugin</groupId>
+                <artifactId>spring-plugin-core</artifactId>
+                <version>2.0.0.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.plugin</groupId>
+                <artifactId>spring-plugin-metadata</artifactId>
+                <version>2.0.0.RELEASE</version>
+            </dependency>
+
+            <!-- 阿里云OSS -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-sdk-oss.version}</version>
+            </dependency>
+
+            <!-- MQTT -->
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${org.eclipse.paho.client.mqttv3.version}</version>
+            </dependency>
+
+            <!-- Excel工具类 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!--lock4j 使用redisTemplate作为分布式锁底层-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>lock4j-redis-template-spring-boot-starter</artifactId>
+                <version>${lock4j-redis-template-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- minio sdk -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <!-- 图片压缩 -->
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 插件定义 -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Maven打包 -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <includeSystemScope>true</includeSystemScope>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
